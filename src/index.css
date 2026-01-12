@@ -1,5 +1,6 @@
 :root {
   --color-bg: #0f0f1a;
+  --titlebar-height: env(titlebar-area-height, 0px);
   --color-surface: #1a1a2e;
   --color-surface-hover: #252540;
   --color-border: rgba(255, 255, 255, 0.1);

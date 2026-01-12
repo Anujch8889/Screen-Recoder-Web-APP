@@ -129,113 +129,115 @@ function App() {
   }, [recorder, screen, camera, mic]);
 
   return (
-    <div className={`app ${isMinimized ? 'minimized' : ''}`}>
-      <header className="app-header">
-        <div className="logo">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
-          </svg>
-          <h1>Screen Recorder</h1>
-        </div>
-        <p className="tagline">Record your screen, camera & microphone</p>
-      </header>
-
-      <main className="app-main">
-        <div className="recorder-section">
-          <Preview
-            stream={screen.stream}
-            isRecording={recorder.isRecording}
-          />
-
-          <SourceSelector
-            onSelectSource={handleSelectSource}
-            cameraEnabled={camera.isActive}
-            micEnabled={mic.isActive}
-            onToggleCamera={handleToggleCamera}
-            onToggleMic={handleToggleMic}
-            cameraDevices={camera.devices}
-            micDevices={mic.devices}
-            selectedCamera={camera.selectedDevice}
-            selectedMic={mic.selectedDevice}
-            onSelectCamera={camera.switchCamera}
-            onSelectMic={mic.switchMicrophone}
-            audioLevel={mic.audioLevel}
-            disabled={recorder.isRecording}
-          />
-
-          <RecordingControls
-            isRecording={recorder.isRecording}
-            isPaused={recorder.isPaused}
-            duration={recorder.duration}
-            onStart={handleStartRecording}
-            onStop={handleStopRecording}
-            onPause={recorder.pauseRecording}
-            onResume={recorder.resumeRecording}
-            disabled={!screen.isCapturing}
-            hasRecording={!!recorder.recordedBlob}
-            onDownload={handleSaveRecording}
-            onDiscard={handleDiscardRecording}
-          />
-        </div>
-
-        <aside className="sidebar">
-          <DownloadButton />
-
-          <RecordingsGallery refreshTrigger={galleryRefresh} />
-
-          <div className="info-card">
-            <h3>Tips</h3>
-            <ul>
-              <li>Click "Screen" to select what to record</li>
-              <li>Toggle camera for PIP overlay</li>
-              <li>Enable microphone for narration</li>
-              <li>Recordings save to your browser</li>
-            </ul>
+    <div className="app-root" style={{ paddingTop: 'var(--titlebar-height)' }}>
+      <div className={`app ${isMinimized ? 'minimized' : ''}`}>
+        <header className="app-header">
+          <div className="logo">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+            </svg>
+            <h1>Screen Recorder</h1>
           </div>
-        </aside>
-      </main>
+          <p className="tagline">Record your screen, camera & microphone</p>
+        </header>
 
-      {/* Camera PIP Overlay - Only show if NOT recording (since controls take over) or if controls hidden */}
-      {camera.isActive && camera.stream && !recorder.isRecording && (
-        <CameraOverlay
-          stream={camera.stream}
-          position={cameraPosition}
-          size="medium"
-          onPositionChange={setCameraPosition}
+        <main className="app-main">
+          <div className="recorder-section">
+            <Preview
+              stream={screen.stream}
+              isRecording={recorder.isRecording}
+            />
+
+            <SourceSelector
+              onSelectSource={handleSelectSource}
+              cameraEnabled={camera.isActive}
+              micEnabled={mic.isActive}
+              onToggleCamera={handleToggleCamera}
+              onToggleMic={handleToggleMic}
+              cameraDevices={camera.devices}
+              micDevices={mic.devices}
+              selectedCamera={camera.selectedDevice}
+              selectedMic={mic.selectedDevice}
+              onSelectCamera={camera.switchCamera}
+              onSelectMic={mic.switchMicrophone}
+              audioLevel={mic.audioLevel}
+              disabled={recorder.isRecording}
+            />
+
+            <RecordingControls
+              isRecording={recorder.isRecording}
+              isPaused={recorder.isPaused}
+              duration={recorder.duration}
+              onStart={handleStartRecording}
+              onStop={handleStopRecording}
+              onPause={recorder.pauseRecording}
+              onResume={recorder.resumeRecording}
+              disabled={!screen.isCapturing}
+              hasRecording={!!recorder.recordedBlob}
+              onDownload={handleSaveRecording}
+              onDiscard={handleDiscardRecording}
+            />
+          </div>
+
+          <aside className="sidebar">
+            <DownloadButton />
+
+            <RecordingsGallery refreshTrigger={galleryRefresh} />
+
+            <div className="info-card">
+              <h3>Tips</h3>
+              <ul>
+                <li>Click "Screen" to select what to record</li>
+                <li>Toggle camera for PIP overlay</li>
+                <li>Enable microphone for narration</li>
+                <li>Recordings save to your browser</li>
+              </ul>
+            </div>
+          </aside>
+        </main>
+
+        {/* Camera PIP Overlay - Only show if NOT recording (since controls take over) or if controls hidden */}
+        {camera.isActive && camera.stream && !recorder.isRecording && (
+          <CameraOverlay
+            stream={camera.stream}
+            position={cameraPosition}
+            size="medium"
+            onPositionChange={setCameraPosition}
+            isRecording={recorder.isRecording}
+            duration={recorder.duration}
+          />
+        )}
+
+        {/* Countdown Overlay */}
+        {showCountdown && (
+          <Countdown
+            seconds={3}
+            onComplete={handleCountdownComplete}
+          />
+        )}
+
+        {/* PWA Install Prompt */}
+        <InstallPrompt />
+
+        {/* Floating Controls during recording */}
+        <FloatingControls
           isRecording={recorder.isRecording}
+          isPaused={recorder.isPaused}
           duration={recorder.duration}
+          onPause={recorder.pauseRecording}
+          onResume={recorder.resumeRecording}
+          onStop={handleStopRecording}
+          micEnabled={mic.isActive}
+          onToggleMic={handleToggleMic}
+          cameraEnabled={camera.isActive}
+          onToggleCamera={handleToggleCamera}
+          cameraStream={camera.stream}
         />
-      )}
 
-      {/* Countdown Overlay */}
-      {showCountdown && (
-        <Countdown
-          seconds={3}
-          onComplete={handleCountdownComplete}
-        />
-      )}
-
-      {/* PWA Install Prompt */}
-      <InstallPrompt />
-
-      {/* Floating Controls during recording */}
-      <FloatingControls
-        isRecording={recorder.isRecording}
-        isPaused={recorder.isPaused}
-        duration={recorder.duration}
-        onPause={recorder.pauseRecording}
-        onResume={recorder.resumeRecording}
-        onStop={handleStopRecording}
-        micEnabled={mic.isActive}
-        onToggleMic={handleToggleMic}
-        cameraEnabled={camera.isActive}
-        onToggleCamera={handleToggleCamera}
-        cameraStream={camera.stream}
-      />
-
-      <footer className="app-footer">
-        <p>Works on Windows, macOS & Web • No installation required</p>
-      </footer>
+        <footer className="app-footer">
+          <p>Works on Windows, macOS & Web • No installation required</p>
+        </footer>
+      </div>
     </div>
   );
 }
