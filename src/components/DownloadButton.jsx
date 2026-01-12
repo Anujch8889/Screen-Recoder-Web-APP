@@ -13,15 +13,22 @@ export function DownloadButton() {
             return;
         }
 
+        // Check for global stash first
+        if (window.deferredInstallPrompt) {
+            setDeferredPrompt(window.deferredInstallPrompt);
+        }
+
         const handler = (e) => {
             e.preventDefault();
             setDeferredPrompt(e);
+            window.deferredInstallPrompt = e; // Sync global
         };
 
         window.addEventListener('beforeinstallprompt', handler);
         window.addEventListener('appinstalled', () => {
             setIsInstalled(true);
             setDeferredPrompt(null);
+            window.deferredInstallPrompt = null;
         });
 
         return () => window.removeEventListener('beforeinstallprompt', handler);
@@ -36,8 +43,8 @@ export function DownloadButton() {
             }
             setDeferredPrompt(null);
         } else {
-            // Fallback - show instructions
-            alert('To install:\n\n1. Click the menu (⋮) in your browser\n2. Select "Install Screen Recorder"\n3. Click "Install"\n\nThe app will be added to your desktop!');
+            // Fallback - show easier instructions
+            alert('To install:\n\n1. Look for the "Install" icon (🖥️ or ⬇️) in your address bar URL field.\n\nOR\n\n2. Click the browser menu (⋮) -> "Install Screen Recorder"');
         }
     };
 

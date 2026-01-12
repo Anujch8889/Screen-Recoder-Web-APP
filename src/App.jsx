@@ -202,6 +202,7 @@ function App() {
           position={cameraPosition}
           size="medium"
           onPositionChange={setCameraPosition}
+          isRecording={recorder.isRecording}
         />
       )}
 

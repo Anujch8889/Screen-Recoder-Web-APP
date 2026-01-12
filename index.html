@@ -97,6 +97,16 @@
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
   <script>
+    // Capture PWA install prompt globally
+    window.deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      window.deferredInstallPrompt = e;
+      console.log('Capture install prompt');
+    });
+
     // Register service worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
