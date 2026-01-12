@@ -195,8 +195,8 @@ function App() {
         </aside>
       </main>
 
-      {/* Camera PIP Overlay */}
-      {camera.isActive && camera.stream && (
+      {/* Camera PIP Overlay - Only show if NOT recording (since controls take over) or if controls hidden */}
+      {camera.isActive && camera.stream && !recorder.isRecording && (
         <CameraOverlay
           stream={camera.stream}
           position={cameraPosition}
@@ -230,6 +230,7 @@ function App() {
         onToggleMic={handleToggleMic}
         cameraEnabled={camera.isActive}
         onToggleCamera={handleToggleCamera}
+        cameraStream={camera.stream}
       />
 
       <footer className="app-footer">
