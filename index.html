@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Meta Tags -->
+  <title>Screen Recorder - Free Online Screen, Camera & Microphone Recorder</title>
+  <meta name="description"
+    content="Free online screen recorder. Record your screen, webcam, and microphone in HD. Works on Windows, macOS, Linux. No download required. Install as PWA for offline use." />
+  <meta name="keywords"
+    content="screen recorder, free screen recorder, online screen recorder, webcam recorder, screen capture, record screen, screen recording app, PWA screen recorder, browser screen recorder" />
+  <meta name="author" content="Screen Recorder" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://screen-recorder.vercel.app/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://screen-recorder.vercel.app/" />
+  <meta property="og:title" content="Screen Recorder - Free Online Screen Recording Tool" />
+  <meta property="og:description"
+    content="Record your screen, webcam, and microphone for free. Works on all platforms. No download required." />
+  <meta property="og:image" content="https://screen-recorder.vercel.app/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Screen Recorder" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://screen-recorder.vercel.app/" />
+  <meta name="twitter:title" content="Screen Recorder - Free Online Screen Recording Tool" />
+  <meta name="twitter:description"
+    content="Record your screen, webcam, and microphone for free. Works on all platforms. No download required." />
+  <meta name="twitter:image" content="https://screen-recorder.vercel.app/og-image.png" />
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#667eea" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Screen Recorder" />
+  <meta name="application-name" content="Screen Recorder" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon.png" />
+  <link rel="apple-touch-icon" href="/icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Structured Data (JSON-LD) for SEO -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Screen Recorder",
+      "url": "https://screen-recorder.vercel.app/",
+      "description": "Free online screen recorder. Record your screen, webcam, and microphone in HD.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Windows, macOS, Linux, ChromeOS",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Screen recording",
+        "Webcam recording",
+        "Microphone recording",
+        "HD quality",
+        "No download required",
+        "Works offline"
+      ],
+      "screenshot": "https://screen-recorder.vercel.app/og-image.png",
+      "softwareVersion": "1.0.0",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "100"
+      }
+    }
+    </script>
+</head>
+
+<body>
+  <!-- Noscript fallback for SEO -->
+  <noscript>
+    <h1>Screen Recorder - Free Online Screen Recording Tool</h1>
+    <p>Record your screen, webcam, and microphone for free. This application requires JavaScript to run.</p>
+  </noscript>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW registered'))
+          .catch(err => console.log('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+
+</html>

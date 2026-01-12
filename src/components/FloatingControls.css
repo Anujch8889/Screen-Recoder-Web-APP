@@ -1,0 +1,175 @@
+.floating-controls {
+    position: fixed;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(15, 15, 26, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    cursor: grab;
+    user-select: none;
+    transition: box-shadow 0.2s, transform 0.1s;
+}
+
+.floating-controls:hover {
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(102, 126, 234, 0.2);
+}
+
+.floating-controls.dragging {
+    cursor: grabbing;
+    transform: scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(102, 126, 234, 0.3);
+}
+
+/* Recording status */
+.fc-recording-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.fc-dot.recording {
+    background: #ff4757;
+    animation: pulse-dot 1s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+}
+
+.fc-dot.paused {
+    background: #f39c12;
+    animation: none;
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.9);
+    }
+}
+
+.fc-timer {
+    font-family: 'SF Mono', 'Roboto Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    min-width: 60px;
+}
+
+/* Control buttons */
+.fc-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fc-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.fc-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.fc-btn.pause {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.fc-btn.pause:hover {
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+}
+
+.fc-btn.resume {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.fc-btn.resume:hover {
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+}
+
+.fc-btn.stop {
+    background: linear-gradient(135deg, #ff4757 0%, #c0392b 100%);
+}
+
+.fc-btn.stop:hover {
+    box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+}
+
+.fc-btn.mic.active {
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+}
+
+.fc-btn.mic.muted {
+    background: rgba(255, 71, 87, 0.3);
+    color: #ff4757;
+}
+
+.fc-btn.camera.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.fc-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 4px;
+}
+
+/* Drag hint */
+.fc-drag-hint {
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: grab;
+}
+
+.floating-controls.dragging .fc-drag-hint {
+    cursor: grabbing;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .floating-controls {
+        padding: 8px 12px;
+        gap: 8px;
+        border-radius: 40px;
+    }
+
+    .fc-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .fc-timer {
+        font-size: 14px;
+    }
+}

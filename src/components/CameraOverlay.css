@@ -1,0 +1,88 @@
+.camera-overlay {
+    position: fixed;
+    z-index: 100;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.camera-overlay:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.camera-overlay:hover .camera-move-hint {
+    opacity: 1;
+}
+
+/* Positions */
+.camera-overlay.top-left {
+    top: 20px;
+    left: 20px;
+}
+
+.camera-overlay.top-right {
+    top: 20px;
+    right: 20px;
+}
+
+.camera-overlay.bottom-left {
+    bottom: 100px;
+    left: 20px;
+}
+
+.camera-overlay.bottom-right {
+    bottom: 100px;
+    right: 20px;
+}
+
+/* Sizes */
+.camera-overlay.small {
+    width: 120px;
+    height: 120px;
+}
+
+.camera-overlay.medium {
+    width: 180px;
+    height: 180px;
+}
+
+.camera-overlay.large {
+    width: 240px;
+    height: 240px;
+}
+
+.camera-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+    /* Mirror effect */
+}
+
+.camera-overlay-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+}
+
+.camera-move-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}

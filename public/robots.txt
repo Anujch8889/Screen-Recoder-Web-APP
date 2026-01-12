@@ -1,0 +1,10 @@
+# Robots.txt for Screen Recorder PWA
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://screen-recorder.vercel.app/sitemap.xml
+
+# Crawl-delay (optional, be nice to crawlers)
+Crawl-delay: 1
