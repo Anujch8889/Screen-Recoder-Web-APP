@@ -11,6 +11,10 @@ export function useMediaRecorder() {
     const chunksRef = useRef([]);
     const timerRef = useRef(null);
     const startTimeRef = useRef(null);
+    const animationFrameRef = useRef(null);
+    const canvasRef = useRef(null);
+    const screenVideoRef = useRef(null);
+    const cameraVideoRef = useRef(null);
 
     const getSupportedMimeType = () => {
         const types = [
@@ -30,16 +34,83 @@ export function useMediaRecorder() {
         return 'video/webm';
     };
 
-    const mergeStreams = (screenStream, cameraStream, micStream) => {
-        const tracks = [];
+    // Create composited stream with camera overlay burned in
+    const createCompositedStream = (screenStream, cameraStream) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvasRef.current = canvas;
 
-        // Add video track from screen
-        if (screenStream) {
-            const videoTrack = screenStream.getVideoTracks()[0];
-            if (videoTrack) tracks.push(videoTrack);
+        // Create video elements for streams
+        const screenVideo = document.createElement('video');
+        screenVideo.srcObject = screenStream;
+        screenVideo.muted = true;
+        screenVideo.play();
+        screenVideoRef.current = screenVideo;
+
+        let cameraVideo = null;
+        if (cameraStream) {
+            cameraVideo = document.createElement('video');
+            cameraVideo.srcObject = cameraStream;
+            cameraVideo.muted = true;
+            cameraVideo.play();
+            cameraVideoRef.current = cameraVideo;
         }
 
-        // Create audio context to mix audio sources
+        // Wait for screen video to be ready
+        return new Promise((resolve) => {
+            screenVideo.onloadedmetadata = () => {
+                // Set canvas size to match screen capture
+                canvas.width = screenVideo.videoWidth || 1920;
+                canvas.height = screenVideo.videoHeight || 1080;
+
+                // Start the draw loop
+                const drawFrame = () => {
+                    if (!canvasRef.current) return;
+
+                    // Draw screen capture (full canvas)
+                    ctx.drawImage(screenVideo, 0, 0, canvas.width, canvas.height);
+
+                    // Draw camera overlay (circular, bottom-right)
+                    if (cameraVideo && cameraVideo.readyState >= 2) {
+                        const radius = Math.min(canvas.width, canvas.height) * 0.12; // 12% of smallest dimension
+                        const padding = 30;
+                        const x = canvas.width - radius - padding;
+                        const y = canvas.height - radius - padding;
+
+                        // Draw circular clip
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        ctx.closePath();
+                        ctx.clip();
+
+                        // Draw camera (mirrored)
+                        ctx.translate(x + radius, y - radius);
+                        ctx.scale(-1, 1);
+                        ctx.drawImage(cameraVideo, 0, 0, radius * 2, radius * 2);
+                        ctx.restore();
+
+                        // Draw border around camera
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius, 0, Math.PI * 2);
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                    }
+
+                    animationFrameRef.current = requestAnimationFrame(drawFrame);
+                };
+
+                drawFrame();
+
+                // Capture stream from canvas (30 FPS)
+                const canvasStream = canvas.captureStream(30);
+                resolve(canvasStream);
+            };
+        });
+    };
+
+    const mergeAudioTracks = (screenStream, micStream) => {
         const audioTracks = [];
 
         // Add screen audio if available
@@ -54,21 +125,27 @@ export function useMediaRecorder() {
             if (micAudio) audioTracks.push(micAudio);
         }
 
-        // Add all audio tracks
-        audioTracks.forEach(track => tracks.push(track));
-
-        return new MediaStream(tracks);
+        return audioTracks;
     };
 
-    const startRecording = useCallback((screenStream, cameraStream = null, micStream = null) => {
+    const startRecording = useCallback(async (screenStream, cameraStream = null, micStream = null) => {
         try {
             setError(null);
             chunksRef.current = [];
 
-            const combinedStream = mergeStreams(screenStream, cameraStream, micStream);
+            // Create composited video stream (screen + camera overlay)
+            const compositedStream = await createCompositedStream(screenStream, cameraStream);
+
+            // Merge audio tracks
+            const audioTracks = mergeAudioTracks(screenStream, micStream);
+
+            // Combine video and audio
+            const tracks = [...compositedStream.getVideoTracks(), ...audioTracks];
+            const finalStream = new MediaStream(tracks);
+
             const mimeType = getSupportedMimeType();
 
-            const recorder = new MediaRecorder(combinedStream, {
+            const recorder = new MediaRecorder(finalStream, {
                 mimeType,
                 videoBitsPerSecond: 8000000 // 8 Mbps for high quality
             });
@@ -83,6 +160,12 @@ export function useMediaRecorder() {
                 const blob = new Blob(chunksRef.current, { type: mimeType });
                 setRecordedBlob(blob);
                 chunksRef.current = [];
+
+                // Cleanup
+                if (animationFrameRef.current) {
+                    cancelAnimationFrame(animationFrameRef.current);
+                }
+                canvasRef.current = null;
             };
 
             recorder.onerror = (e) => {
@@ -117,6 +200,10 @@ export function useMediaRecorder() {
         if (timerRef.current) {
             clearInterval(timerRef.current);
             timerRef.current = null;
+        }
+
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
         }
 
         setIsRecording(false);

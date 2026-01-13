@@ -196,8 +196,8 @@ function App() {
           </aside>
         </main>
 
-        {/* Camera Overlay - Shows always when camera is active (Will be captured in video) */}
-        {camera.isActive && camera.stream && (
+        {/* Camera Overlay - Only show when NOT recording (camera is burned into video during recording) */}
+        {camera.isActive && camera.stream && !recorder.isRecording && (
           <CameraOverlay
             stream={camera.stream}
             position={cameraPosition}

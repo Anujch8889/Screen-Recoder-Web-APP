@@ -208,7 +208,18 @@ export function FloatingControls({
             style={pipWindow ? {} : { left: position.x, top: position.y }}
             onMouseDown={handleMouseDown}
         >
-            {/* Controls only - Camera is shown separately on the page and captured in video */}
+            {/* Camera Preview in PiP (for user viewing only - actual video uses canvas compositing) */}
+            {pipWindow && cameraEnabled && cameraStream && (
+                <div className="fc-video-container">
+                    <video
+                        ref={videoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="fc-video"
+                    />
+                </div>
+            )}
 
             {/* Controls Overlay (Status + Buttons) - Only visible on hover in PiP */}
             <div className={pipWindow ? "fc-controls-overlay" : ""}>
