@@ -196,8 +196,8 @@ function App() {
           </aside>
         </main>
 
-        {/* Camera PIP Overlay - Only show if NOT recording (since controls take over) or if controls hidden */}
-        {camera.isActive && camera.stream && !recorder.isRecording && (
+        {/* Camera Overlay - Shows always when camera is active (Will be captured in video) */}
+        {camera.isActive && camera.stream && (
           <CameraOverlay
             stream={camera.stream}
             position={cameraPosition}
@@ -205,6 +205,7 @@ function App() {
             onPositionChange={setCameraPosition}
             isRecording={recorder.isRecording}
             duration={recorder.duration}
+            circleMode={true}
           />
         )}
 

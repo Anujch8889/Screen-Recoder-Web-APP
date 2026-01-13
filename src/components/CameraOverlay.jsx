@@ -14,7 +14,8 @@ export function CameraOverlay({
     size = 'medium',
     onPositionChange,
     isRecording = false,
-    duration = 0
+    duration = 0,
+    circleMode = false
 }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
