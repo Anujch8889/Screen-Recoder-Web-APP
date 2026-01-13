@@ -13,7 +13,8 @@ export function FloatingControls({
     onToggleMic,
     cameraEnabled,
     onToggleCamera,
-    cameraStream // Receive camera stream
+    cameraStream,
+    floatingMode = 'controls-only' // 'controls-only' or 'controls-with-camera'
 }) {
     const [position, setPosition] = useState({ x: 20, y: 20 });
     const [isDragging, setIsDragging] = useState(false);
@@ -208,8 +209,8 @@ export function FloatingControls({
             style={pipWindow ? {} : { left: position.x, top: position.y }}
             onMouseDown={handleMouseDown}
         >
-            {/* Camera Preview in PiP (for user viewing only - actual video uses canvas compositing) */}
-            {pipWindow && cameraEnabled && cameraStream && (
+            {/* Camera Preview in PiP - only when 'controls-with-camera' mode is selected */}
+            {pipWindow && cameraEnabled && cameraStream && floatingMode === 'controls-with-camera' && (
                 <div className="fc-video-container">
                     <video
                         ref={videoRef}
